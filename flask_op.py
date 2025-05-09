@@ -13,20 +13,27 @@ def find_window():
     hwnd = op.FindWindow(class_name, title)
     return jsonify({'hwnd': hwnd})
 
-@app.route('/move_window')
-def move_window():
-    hwnd = request.args.get('hwnd', 0)
-    x = request.args.get('x', 0)
-    y = request.args.get('y', 0)
-    op_ret = op.MoveWindow(hwnd, x, y)
-    return jsonify({'op_ret': op_ret})
-
 @app.route('/set_client_size')
 def set_client_size():
     hwnd = request.args.get('hwnd', 0)
     width = request.args.get('width', 720)
     hight = request.args.get('hight', 480)
     op_ret = op.SetClientSize(hwnd, width, hight)
+    return jsonify({'op_ret': op_ret})
+
+@app.route('/set_window_state')
+def set_window_state():
+    hwnd = request.args.get('hwnd', 0)
+    flag = request.args.get('flag', 1)
+    op_ret = op.SetWindowState(hwnd, flag)
+    return jsonify({'op_ret': op_ret})
+
+@app.route('/move_window')
+def move_window():
+    hwnd = request.args.get('hwnd', 0)
+    x = request.args.get('x', 0)
+    y = request.args.get('y', 0)
+    op_ret = op.MoveWindow(hwnd, x, y)
     return jsonify({'op_ret': op_ret})
 
 @app.route('/bind_window')

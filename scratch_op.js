@@ -49,6 +49,21 @@ class ScratchOpBlocks {
                     }
                 },
                 {
+                    opcode: 'setWindowState',
+                    blockType: Scratch.BlockType.COMMAND,
+                    text: 'set window [HWND] state to [FLAG]',
+                    arguments: {
+                        HWND: {
+                            type: Scratch.ArgumentType.NUMBER,
+                            defaultValue: 0
+                        },
+                        FLAG: {
+                            type: Scratch.ArgumentType.NUMBER,
+                            defaultValue: 1
+                        }
+                    }
+                },
+                {
                     opcode: 'moveWindow',
                     blockType: Scratch.BlockType.COMMAND,
                     text: 'move window [HWND] to x [X] y [Y]',
@@ -114,11 +129,11 @@ class ScratchOpBlocks {
                         },
                         X: {
                             type: Scratch.ArgumentType.NUMBER,
-                            defaultValue: 0
+                            defaultValue: 360
                         },
                         Y: {
                             type: Scratch.ArgumentType.NUMBER,
-                            defaultValue: 0
+                            defaultValue: 240
                         }
                     }
                 },
@@ -138,7 +153,14 @@ class ScratchOpBlocks {
                         }
                     }
                 }
-            ]
+            ],
+            menus: {
+                displayOptions: ['normal', 'gdi', 'dx'],
+                mouseOptions: ['normal', 'windows', 'dx'],
+                keypadOptions: ['normal', 'windows'],
+                mouseActions: ['MoveTo', 'LeftClick', 'RightClick'],
+                keypadActions: ['KeyPress', 'KeyDown', 'KeyUp']
+            },
         };
     }
     
@@ -193,6 +215,23 @@ class ScratchOpBlocks {
             .then(response => response.json())
             .then(data => {
                 console.log('Client size set:', data.op_ret);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    setWindowState(args) {
+        const params = new URLSearchParams({
+            hwnd: args.HWND,
+            flag: args.FLAG
+        });
+        const url = `${this.host}/set_window_state?${params.toString()}`;
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Window state set:', data.op_ret);
             })
             .catch(error => {
                 console.error('Error:', error);
