@@ -1,8 +1,10 @@
 from com_op import Op
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 
 op = Op()
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/find_window')
 def find_window():
