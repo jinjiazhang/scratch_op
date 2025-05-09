@@ -47,6 +47,96 @@ class ScratchOpBlocks {
                             defaultValue: 480
                         }
                     }
+                },
+                {
+                    opcode: 'moveWindow',
+                    blockType: Scratch.BlockType.COMMAND,
+                    text: 'move window [HWND] to x [X] y [Y]',
+                    arguments: {
+                        HWND: {
+                            type: Scratch.ArgumentType.NUMBER,
+                            defaultValue: 0
+                        },
+                        X: {
+                            type: Scratch.ArgumentType.NUMBER,
+                            defaultValue: 0
+                        },
+                        Y: {
+                            type: Scratch.ArgumentType.NUMBER,
+                            defaultValue: 0
+                        }
+                    }
+                },
+                {
+                    opcode: 'bindWindow',
+                    blockType: Scratch.BlockType.COMMAND,
+                    text: 'bind window [HWND] with display [DISPLAY] mouse [MOUSE] keypad [KEYPAD] mode [MODE]',
+                    arguments: {
+                        HWND: {
+                            type: Scratch.ArgumentType.NUMBER,
+                            defaultValue: 0
+                        },
+                        DISPLAY: {
+                            type: Scratch.ArgumentType.STRING,
+                            menu: 'displayOptions',
+                            defaultValue: 'normal'
+                        },
+                        MOUSE: {
+                            type: Scratch.ArgumentType.STRING,
+                            menu: 'mouseOptions',
+                            defaultValue: 'normal'
+                        },
+                        KEYPAD: {
+                            type: Scratch.ArgumentType.STRING,
+                            menu: 'keypadOptions',
+                            defaultValue: 'normal'
+                        },
+                        MODE: {
+                            type: Scratch.ArgumentType.NUMBER,
+                            defaultValue: 0
+                        }
+                    }
+                },
+                {
+                    opcode: 'unbindWindow',
+                    blockType: Scratch.BlockType.COMMAND,
+                    text: 'unbind window'
+                },
+                {
+                    opcode: 'mouseAction',
+                    blockType: Scratch.BlockType.COMMAND,
+                    text: 'mouse [ACTION] at x [X] y [Y]',
+                    arguments: {
+                        ACTION: {
+                            type: Scratch.ArgumentType.STRING,
+                            menu: 'mouseActions',
+                            defaultValue: 'MoveTo'
+                        },
+                        X: {
+                            type: Scratch.ArgumentType.NUMBER,
+                            defaultValue: 0
+                        },
+                        Y: {
+                            type: Scratch.ArgumentType.NUMBER,
+                            defaultValue: 0
+                        }
+                    }
+                },
+                {
+                    opcode: 'keypadAction',
+                    blockType: Scratch.BlockType.COMMAND,
+                    text: 'keypad [ACTION] with key [VK_CODE]',
+                    arguments: {
+                        ACTION: {
+                            type: Scratch.ArgumentType.STRING,
+                            menu: 'keypadActions',
+                            defaultValue: 'KeyPress'
+                        },
+                        VK_CODE: {
+                            type: Scratch.ArgumentType.NUMBER,
+                            defaultValue: 13
+                        }
+                    }
                 }
             ]
         };
@@ -73,6 +163,24 @@ class ScratchOpBlocks {
             });
     }
 
+    moveWindow(args) {
+        const params = new URLSearchParams({
+            hwnd: args.HWND,
+            x: args.X,
+            y: args.Y
+        });
+        const url = `${this.host}/move_window?${params.toString()}`;
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Window moved:', data.op_ret);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
     setClientSize(args) {
         const params = new URLSearchParams({
             hwnd: args.HWND,
@@ -85,6 +193,74 @@ class ScratchOpBlocks {
             .then(response => response.json())
             .then(data => {
                 console.log('Client size set:', data.op_ret);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    bindWindow(args) {
+        const params = new URLSearchParams({
+            hwnd: args.HWND,
+            display: args.DISPLAY,
+            mouse: args.MOUSE,
+            keypad: args.KEYPAD,
+            mode: args.MODE
+        });
+        const url = `${this.host}/bind_window?${params.toString()}`;
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Window bound:', data.op_ret);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    unbindWindow() {
+        const url = `${this.host}/unbind_window`;
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Window unbound:', data.op_ret);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    mouseAction(args) {
+        const params = new URLSearchParams({
+            x: args.X,
+            y: args.Y,
+            action: args.ACTION
+        });
+        const url = `${this.host}/mouse_action?${params.toString()}`;
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Mouse action:', data.op_ret);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    keypadAction(args) {
+        const params = new URLSearchParams({
+            vk_code: args.VK_CODE,
+            action: args.ACTION
+        });
+        const url = `${this.host}/keypad_action?${params.toString()}`;
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Keypad action:', data.op_ret);
             })
             .catch(error => {
                 console.error('Error:', error);
