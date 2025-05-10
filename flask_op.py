@@ -75,5 +75,47 @@ def keypad_action():
         op_ret = op.KeyUp(vk_code)
     return jsonify({'op_ret': op_ret})
 
+@app.route('/get_color')
+def get_color():
+    x = request.args.get('x', 0)
+    y = request.args.get('y', 0)
+    color = op.GetColor(x, y)
+    return jsonify({'color': color})
+
+@app.route('/find_color')
+def find_color():
+    x1 = request.args.get('x1', 0)
+    y1 = request.args.get('y1', 0)
+    x2 = request.args.get('x2', 720)
+    y2 = request.args.get('y2', 480)
+    color = request.args.get('color', '000000')
+    sim = request.args.get('sim', 1.0)
+    dir = request.args.get('dir', 0)
+    op_ret, x, y = op.FindColor(x1, y1, x2, y2, color, sim, dir)
+    return jsonify({'op_ret': op_ret, 'x': x, 'y': y})
+
+@app.route('/capture')
+def capture():
+    x1 = request.args.get('x1', 0)
+    y1 = request.args.get('y1', 0)
+    x2 = request.args.get('x2', 720)
+    y2 = request.args.get('y2', 480)
+    file = request.args.get('color', '1.bmp')
+    op_ret = op.Capture(x1, y1, x2, y2, file)
+    return jsonify({'op_ret': op_ret})
+
+@app.route('/find_pic')
+def find_pic():
+    x1 = request.args.get('x1', 0)
+    y1 = request.args.get('y1', 0)
+    x2 = request.args.get('x2', 720)
+    y2 = request.args.get('y2', 480)
+    file = request.args.get('file', '1.bmp')
+    delta_color = request.args.get('delta_color', '000000')
+    sim = request.args.get('sim', 1.0)
+    dir = request.args.get('dir', 0)
+    op_ret, x, y = op.FindPic(x1, y1, x2, y2, file, delta_color, sim, dir)
+    return jsonify({'op_ret': op_ret, 'x': x, 'y': y})
+
 if __name__ == '__main__':
     app.run(debug=True)
