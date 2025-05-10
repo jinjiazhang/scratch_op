@@ -1,6 +1,8 @@
 class ScratchOpBlocks {
     constructor() {
         this.hwnd = 0;
+        this.lastX = 0;
+        this.lastY = 0;
         this.host = 'http://localhost:5000';
     }
 
@@ -13,6 +15,16 @@ class ScratchOpBlocks {
                     opcode: 'getHwnd',
                     blockType: Scratch.BlockType.REPORTER,
                     text: 'hwnd'
+                },
+                {
+                    opcode: 'getLastX',
+                    blockType: Scratch.BlockType.REPORTER,
+                    text: 'last x'
+                },
+                {
+                    opcode: 'getLastY',
+                    blockType: Scratch.BlockType.REPORTER,
+                    text: 'last y'
                 },
                 {
                     opcode: 'findWindow',
@@ -152,6 +164,124 @@ class ScratchOpBlocks {
                             defaultValue: 13
                         }
                     }
+                },
+                {
+                    opcode: 'getColor',
+                    blockType: Scratch.BlockType.REPORTER,
+                    text: 'get color at x [X] y [Y]',
+                    arguments: {
+                        X: {
+                            type: Scratch.ArgumentType.NUMBER,
+                            defaultValue: 0
+                        },
+                        Y: {
+                            type: Scratch.ArgumentType.NUMBER,
+                            defaultValue: 0
+                        }
+                    }
+                },
+                {
+                    opcode: 'findColor',
+                    blockType: Scratch.BlockType.REPORTER,
+                    blockType: Scratch.BlockType.BOOLEAN,
+                    text: 'find color in area x1 [X1] y1 [Y1] x2 [X2] y2 [Y2] color [COLOR] sim [SIM] dir [DIR]',
+                    arguments: {
+                        X1: {
+                            type: Scratch.ArgumentType.NUMBER,
+                            defaultValue: 0
+                        },
+                        Y1: {
+                            type: Scratch.ArgumentType.NUMBER,
+                            defaultValue: 0
+                        },
+                        X2: {
+                            type: Scratch.ArgumentType.NUMBER,
+                            defaultValue: 720
+                        },
+                        Y2: {
+                            type: Scratch.ArgumentType.NUMBER,
+                            defaultValue: 480
+                        },
+                        COLOR: {
+                            type: Scratch.ArgumentType.STRING,
+                            defaultValue: '000000'
+                        },
+                        SIM: {
+                            type: Scratch.ArgumentType.NUMBER,
+                            defaultValue: 1.0
+                        },
+                        DIR: {
+                            type: Scratch.ArgumentType.NUMBER,
+                            defaultValue: 0
+                        }
+                    }
+                },
+                {
+                    opcode: 'capture',
+                    blockType: Scratch.BlockType.COMMAND,
+                    text: 'capture area x1 [X1] y1 [Y1] x2 [X2] y2 [Y2] to file [FILE]',
+                    arguments: {
+                        X1: {
+                            type: Scratch.ArgumentType.NUMBER,
+                            defaultValue: 0
+                        },
+                        Y1: {
+                            type: Scratch.ArgumentType.NUMBER,
+                            defaultValue: 0
+                        },
+                        X2: {
+                            type: Scratch.ArgumentType.NUMBER,
+                            defaultValue: 720
+                        },
+                        Y2: {
+                            type: Scratch.ArgumentType.NUMBER,
+                            defaultValue: 480
+                        },
+                        FILE: {
+                            type: Scratch.ArgumentType.STRING,
+                            defaultValue: '1.bmp'
+                        }
+                    }
+                },
+                {
+                    opcode: 'findPic',
+                    blockType: Scratch.BlockType.REPORTER,
+                    blockType: Scratch.BlockType.BOOLEAN,
+                    text: 'find pic in area x1 [X1] y1 [Y1] x2 [X2] y2 [Y2] file [FILE] delta_color [DELTA_COLOR] sim [SIM] dir [DIR]',
+                    arguments: {
+                        X1: {
+                            type: Scratch.ArgumentType.NUMBER,
+                            defaultValue: 0
+                        },
+                        Y1: {
+                            type: Scratch.ArgumentType.NUMBER,
+                            defaultValue: 0
+                        },
+                        X2: {
+                            type: Scratch.ArgumentType.NUMBER,
+                            defaultValue: 720
+                        },
+                        Y2: {
+                            type: Scratch.ArgumentType.NUMBER,
+                            defaultValue: 480
+                        },
+                        FILE: {
+                            type: Scratch.ArgumentType.STRING,
+                            defaultValue: '1.bmp'
+                        },
+                        DELTA_COLOR: {
+                            type: Scratch.ArgumentType.STRING,
+                            defaultValue: '000000'
+                        },
+                        SIM: {
+                            type: Scratch.ArgumentType.NUMBER,
+                            defaultValue: 1.0
+                        },
+                        DIR: {
+                            type: Scratch.ArgumentType.NUMBER,
+                            defaultValue: 0
+                        }
+                    }
                 }
             ],
             menus: {
@@ -165,7 +295,15 @@ class ScratchOpBlocks {
     }
     
     getHwnd() {
-        return this.hwnd || '';
+        return this.hwnd || 0;
+    }
+
+    getLastX() {
+        return this.lastX || 0;
+    }
+
+    getLastY() {
+        return this.lastY || 0;
     }
 
     findWindow(args) {
@@ -303,6 +441,95 @@ class ScratchOpBlocks {
             })
             .catch(error => {
                 console.error('Error:', error);
+            });
+    }
+
+    getColor(args) {
+        const params = new URLSearchParams({
+            x: args.X,
+            y: args.Y
+        });
+        const url = `${this.host}/get_color?${params.toString()}`;
+
+        return fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                return data.color;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                return '';
+            });
+    }
+
+    findColor(args) {
+        const params = new URLSearchParams({
+            x1: args.X1,
+            y1: args.Y1,
+            x2: args.X2,
+            y2: args.Y2,
+            color: args.COLOR,
+            sim: args.SIM,
+            dir: args.DIR
+        });
+        const url = `${this.host}/find_color?${params.toString()}`;
+
+        return fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                this.lastX = data.x;
+                this.lastY = data.y;
+                return data.op_ret == 1;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                return false;
+            });
+    }
+
+    capture(args) {
+        const params = new URLSearchParams({
+            x1: args.X1,
+            y1: args.Y1,
+            x2: args.X2,
+            y2: args.Y2,
+            file: args.FILE
+        });
+        const url = `${this.host}/capture?${params.toString()}`;
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Capture:', data.op_ret);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    findPic(args) {
+        const params = new URLSearchParams({
+            x1: args.X1,
+            y1: args.Y1,
+            x2: args.X2,
+            y2: args.Y2,
+            file: args.FILE,
+            delta_color: args.DELTA_COLOR,
+            sim: args.SIM,
+            dir: args.DIR
+        });
+        const url = `${this.host}/find_pic?${params.toString()}`;
+
+        return fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                this.lastX = data.x;
+                this.lastY = data.y;
+                return data.op_ret == 1;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                return false;
             });
     }
 }
