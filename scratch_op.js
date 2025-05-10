@@ -1,8 +1,8 @@
 class ScratchOpBlocks {
     constructor() {
         this.hwnd = 0;
-        this.lastX = 0;
-        this.lastY = 0;
+        this.lastX = -1;
+        this.lastY = -1;
         this.host = 'http://localhost:5000';
     }
 
@@ -319,6 +319,7 @@ class ScratchOpBlocks {
                 this.hwnd = data.hwnd;
             })
             .catch(error => {
+                this.hwnd = 0;
                 console.error('Error:', error);
             });
     }
@@ -334,7 +335,7 @@ class ScratchOpBlocks {
         fetch(url)
             .then(response => response.json())
             .then(data => {
-                console.log('Window moved:', data.op_ret);
+                console.log('Window moved:', data.ret);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -352,7 +353,7 @@ class ScratchOpBlocks {
         fetch(url)
             .then(response => response.json())
             .then(data => {
-                console.log('Client size set:', data.op_ret);
+                console.log('Client size set:', data.ret);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -369,7 +370,7 @@ class ScratchOpBlocks {
         fetch(url)
             .then(response => response.json())
             .then(data => {
-                console.log('Window state set:', data.op_ret);
+                console.log('Window state set:', data.ret);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -389,7 +390,7 @@ class ScratchOpBlocks {
         fetch(url)
             .then(response => response.json())
             .then(data => {
-                console.log('Window bound:', data.op_ret);
+                console.log('Window bound:', data.ret);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -402,7 +403,7 @@ class ScratchOpBlocks {
         fetch(url)
             .then(response => response.json())
             .then(data => {
-                console.log('Window unbound:', data.op_ret);
+                console.log('Window unbound:', data.ret);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -420,7 +421,7 @@ class ScratchOpBlocks {
         fetch(url)
             .then(response => response.json())
             .then(data => {
-                console.log('Mouse action:', data.op_ret);
+                console.log('Mouse action:', data.ret);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -437,7 +438,7 @@ class ScratchOpBlocks {
         fetch(url)
             .then(response => response.json())
             .then(data => {
-                console.log('Keypad action:', data.op_ret);
+                console.log('Keypad action:', data.ret);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -479,9 +480,11 @@ class ScratchOpBlocks {
             .then(data => {
                 this.lastX = data.x;
                 this.lastY = data.y;
-                return data.op_ret == 1;
+                return data.ret == 0;
             })
             .catch(error => {
+                this.lastX = -1;
+                this.lastY = -1;
                 console.error('Error:', error);
                 return false;
             });
@@ -500,7 +503,7 @@ class ScratchOpBlocks {
         fetch(url)
             .then(response => response.json())
             .then(data => {
-                console.log('Capture:', data.op_ret);
+                console.log('Capture:', data.ret);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -525,9 +528,11 @@ class ScratchOpBlocks {
             .then(data => {
                 this.lastX = data.x;
                 this.lastY = data.y;
-                return data.op_ret == 1;
+                return data.ret == 0;
             })
             .catch(error => {
+                this.lastX = -1;
+                this.lastY = -1;
                 console.error('Error:', error);
                 return false;
             });
