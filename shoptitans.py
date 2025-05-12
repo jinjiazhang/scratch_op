@@ -90,7 +90,7 @@ class ShopTitans:
         
     def peak_result(self):
         if 'RandomItemQuality' not in self.payloads:
-            return None
+            return -1
         
         data = self.payloads['RandomItemQuality']
         weights = [data['p4'], data['p3'], data['p2'], data['p1']]

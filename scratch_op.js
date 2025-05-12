@@ -37,7 +37,7 @@ class ScratchOpBlocks {
                         },
                         TITLE: {
                             type: Scratch.ArgumentType.STRING,
-                            defaultValue: ''
+                            defaultValue: 'Shop Titans'
                         }
                     }
                 },
