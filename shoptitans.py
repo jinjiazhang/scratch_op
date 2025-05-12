@@ -8,14 +8,6 @@ class ShopTitans:
         self.script = None
         self.payloads = {}
 
-    def __enter__(self):
-        if not self.attach():
-            raise RuntimeError(f"Failed to attach to {self.target}")
-        return self
-    
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.detach()
-
     def on_message(self, message, data):
         if message['type'] == 'send':
             payload = message.get('payload', {})
@@ -101,4 +93,14 @@ class ShopTitans:
             return None
         
         data = self.payloads['RandomItemQuality']
-        return data
+        weights = [data['p4'], data['p3'], data['p2'], data['p1']]
+        random = 48271 * data['seek'] % 0x7FFFFFFF
+        value = (random << 16) // 0x7FFFFFFF
+
+        cumulative = 0
+        for i, weight in enumerate(weights):
+            cumulative += weight
+            if value < cumulative:
+                return len(weights) - i
+
+        return 0
