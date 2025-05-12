@@ -282,6 +282,21 @@ class ScratchOpBlocks {
                             defaultValue: 0
                         }
                     }
+                },
+                {
+                    opcode: 'attachGame',
+                    blockType: Scratch.BlockType.COMMAND,
+                    text: 'attach game'
+                },
+                {
+                    opcode: 'detachGame',
+                    blockType: Scratch.BlockType.COMMAND,
+                    text: 'detach game'
+                },
+                {
+                    opcode: 'peakResult',
+                    blockType: Scratch.BlockType.REPORTER,
+                    text: 'peak result'
                 }
             ],
             menus: {
@@ -293,7 +308,52 @@ class ScratchOpBlocks {
             },
         };
     }
-    
+
+    attachGame() {
+        const url = `${this.host}/attach_game`;
+
+        return fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Game attached:', data.ret);
+                return data.ret;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                return false;
+            });
+    }
+
+    detachGame() {
+        const url = `${this.host}/detach_game`;
+
+        return fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Game detached:', data.ret);
+                return data.ret;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                return false;
+            });
+    }
+
+    peakResult() {
+        const url = `${this.host}/peak_result`;
+
+        return fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Peak result:', data.result);
+                return data.result;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                return -1;
+            });
+    }
+
     getHwnd() {
         return this.hwnd || 0;
     }

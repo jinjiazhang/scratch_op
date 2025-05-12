@@ -19,7 +19,7 @@ class ShopTitans:
             print(f"[-] Frida Script Error: {message.get('description', 'Unknown error')}")
             print(f"[-] Stack: {message.get('stack', 'No stack trace')}")
 
-    def attach(self):
+    def attach_game(self):
         if self.session:
             print("[!] Already attached. Detach first if you want to re-attach.")
             return True
@@ -63,7 +63,7 @@ class ShopTitans:
             self.script = None
             return False
         
-    def detach(self):
+    def detach_game(self):
         if self.script:
             try:
                 print("[*] Unloading script...")
@@ -88,7 +88,7 @@ class ShopTitans:
             finally:
                 self.session = None
         
-    def peak_result(self):
+    def peak_result(self, index = 0):
         if 'RandomItemQuality' not in self.payloads:
             return -1
         

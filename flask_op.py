@@ -1,8 +1,10 @@
 from com_op import Op
+from shoptitans import ShopTitans
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 op = Op()
+st = ShopTitans()
 app = Flask(__name__)
 CORS(app)
 
@@ -116,6 +118,21 @@ def find_pic():
     dir = request.args.get('dir', 0)
     ret, x, y = op.FindPic(x1, y1, x2, y2, file, delta_color, sim, dir)
     return jsonify({'ret': ret, 'x': x, 'y': y})
+
+@app.route('/attach_game')
+def attach_game():
+    ret = st.attach()
+    return jsonify({'ret': ret})
+
+@app.route('/detach_game')
+def detach_game():
+    ret = st.detach()
+    return jsonify({'ret': ret})
+
+@app.route('/peak_result')
+def peak_result():
+    result = st.peak_result()
+    return jsonify({'result': result})
 
 if __name__ == '__main__':
     app.run(debug=True, threaded=False)
